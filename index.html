@@ -37,8 +37,8 @@
 
         #form input {
             width: 100%;
-            padding: 3px;
-            margin: 3px 0;
+            padding: 2px;
+            margin: 2px 0;
             border: 1px solid #ddd;
             border-radius: 5px;
             box-sizing: border-box;
@@ -80,11 +80,11 @@
             display: none;
             margin-top: 20px;
             width: 100%;
-            max-width: 200px; /* Limit image width */
-            height: auto; /* Maintain aspect ratio */
+            max-width: 200px;
+            height: auto;
         }
-        /* CSS for side-by-side images */
-        .image-container {
+         /* CSS for side-by-side images */
+         .image-container {
             display: inline-block;
             gap: 15px; /* Add spacing between images */
         }
@@ -94,6 +94,44 @@
             height: auto; /* Maintain aspect ratio */
             border: 2px solid #ccc; /* Optional border */
             border-radius: 5px; /* Optional rounded corners */
+        }
+
+        /* CSS for loader animation */
+        .loader {
+            --s: 15px;
+            width: calc(var(--s) * 2.33);
+            aspect-ratio: 1;
+            display: flex;
+            justify-content: space-between;
+            animation: l29-0 1s infinite;
+        }
+
+        .loader::before,
+        .loader::after {
+            content: "";
+            width: var(--s);
+            --_g: no-repeat radial-gradient(farthest-side, #000 94%, #0000);
+            background: var(--_g) top, var(--_g) bottom;
+            background-size: 100% var(--s);
+            transform-origin: 50% calc(100% - var(--s) / 2);
+            animation: inherit;
+            animation-name: l29-1;
+        }
+
+        .loader::after {
+            --_s: -1;
+        }
+
+        @keyframes l29-0 {
+            100% {
+                transform: translateY(calc(var(--s) - 100%));
+            }
+        }
+
+        @keyframes l29-1 {
+            100% {
+                transform: rotate(calc(var(--_s, 1) * -180deg));
+            }
         }
     </style>
 </head>
@@ -111,33 +149,33 @@
             Pincode: <input type="text" id="pincode" placeholder="Enter pincode"><br><br>
             Income: <input type="number" id="income" placeholder="Enter income"><br><br>
             Earning Members: <input type="text" id="earningMembers" placeholder="Enter earning members"><br><br>
-        
-            <!-- Corrected image links -->
-            <div class="image-container">
-            <img src="https://i.postimg.cc/9rSfKxXt/image1.jpg" alt="Image 1" height="auto" width="auto">
-            <img src="https://i.postimg.cc/tZMTbDtj/image2.jpg" alt="Image 2" height="auto" width="auto">
-        </div><br><br>
-        
+
+             <!-- Corrected image links -->
+             <div class="image-container">
+                <img src="https://i.postimg.cc/9rSfKxXt/image1.jpg" alt="Image 1" height="auto" width="auto">
+                <img src="https://i.postimg.cc/tZMTbDtj/image2.jpg" alt="Image 2" height="auto" width="auto">
+            </div><br><br>
+
             <!-- Signature Input -->
             <label for="signatureInput">Upload Signature Image:</label>
             <input type="file" id="signatureInput" accept="image/*"><br><br>
-        
+
+            <!-- Loader Animation -->
+            <div id="loader" class="loader" style="display: none;"></div><br>
+
             <button type="button" onclick="handleUpload()">Upload Image</button><br><br>
             <!-- Display uploaded image here -->
             <img id="uploadedImage" src="" alt="Uploaded Image">
             <button type="button" onclick="generatePDF()">Generate PDF</button>
         </form>
-        
-
-        
     </div>
 
     <script>
-        // Variables to hold image data after background removal
         let imageURL = "";
 
-        // Handle image upload and background removal
         function handleUpload() {
+            const loader = document.getElementById('loader');
+            loader.style.display = 'flex'; // Show loader
             const fileInput = document.getElementById('signatureInput');
             const image = fileInput.files[0];
             const formData = new FormData();
@@ -150,23 +188,23 @@
                 headers: { 'X-Api-Key': apikey },
                 body: formData
             })
-            .then(response => response.blob())
-            .then(blob => {
-                const url = URL.createObjectURL(blob);
-                imageURL = url;
-                
-                // Set the uploaded image as the src of the img tag
-                const uploadedImage = document.getElementById('uploadedImage');
-                uploadedImage.src = url;
-                uploadedImage.style.display = 'block';  // Make the image visible
-            })
-            .catch(err => console.error(err));
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    imageURL = url;
+
+                    const uploadedImage = document.getElementById('uploadedImage');
+                    uploadedImage.src = url;
+                    uploadedImage.style.display = 'block'; // Show uploaded image
+                })
+                .catch(err => console.error(err))
+                .finally(() => {
+                    loader.style.display = 'none'; // Hide loader
+                });
         }
 
-        // Generate PDF
-        // Generate PDF
-async function generatePDF() {
-    const { jsPDF } = window.jspdf;
+        async function generatePDF() {
+            const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
     // Fetching the current date
