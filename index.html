@@ -199,7 +199,7 @@ async function generatePDF() {
     doc.text(`Resident of ${village}, P.O- ${postOffice}, P.S- ${policeStation}, ${district}-${pincode}`, 10, 65);
     doc.text(`do hereby solemnly affirm and declare as under:`, 10, 70);
     doc.text(`The annual income of my family from all sources is Rs ${income}/- ${incomeInWords}.`, 10, 85);
-    doc.text(`My father is ${earningMembers} earning member(s) in my family.`, 10, 110);
+    doc.text(`My father is earning ${earningMembers} member(s) in my family.`, 10, 110);
     doc.text(`I certify that the above information given by me is true and I am willing to provide any additional documents`, 10, 125);
     doc.text(`that may be required to prove this cause.`, 10, 130);
     doc.text(`In the case, the information furnished by me is found false, I will be liable for legal actions to be initiated`, 10, 145);
