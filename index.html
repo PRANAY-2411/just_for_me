@@ -14,7 +14,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 200px 0 0 0;
+            margin: 300px 0 0 0;
             padding: 200px 0 0 0;
         }
 
@@ -37,8 +37,8 @@
 
         #form input {
             width: 100%;
-            padding: 5px;
-            margin: 5px 0;
+            padding: 3px;
+            margin: 3px 0;
             border: 1px solid #ddd;
             border-radius: 5px;
             box-sizing: border-box;
@@ -83,8 +83,21 @@
             max-width: 200px; /* Limit image width */
             height: auto; /* Maintain aspect ratio */
         }
+        /* CSS for side-by-side images */
+        .image-container {
+            display: inline-block;
+            gap: 15px; /* Add spacing between images */
+        }
+
+        .image-container img {
+            width: 150px; /* Adjust width as needed */
+            height: auto; /* Maintain aspect ratio */
+            border: 2px solid #ccc; /* Optional border */
+            border-radius: 5px; /* Optional rounded corners */
+        }
     </style>
 </head>
+
 <body>
     <div id="form">
         <form id="form">
@@ -98,16 +111,23 @@
             Pincode: <input type="text" id="pincode" placeholder="Enter pincode"><br><br>
             Income: <input type="number" id="income" placeholder="Enter income"><br><br>
             Earning Members: <input type="text" id="earningMembers" placeholder="Enter earning members"><br><br>
-
+        
+            <!-- Corrected image links -->
+            <div class="image-container">
+            <img src="https://i.postimg.cc/9rSfKxXt/image1.jpg" alt="Image 1" height="auto" width="auto">
+            <img src="https://i.postimg.cc/tZMTbDtj/image2.jpg" alt="Image 2" height="auto" width="auto">
+        </div><br><br>
+        
             <!-- Signature Input -->
             <label for="signatureInput">Upload Signature Image:</label>
             <input type="file" id="signatureInput" accept="image/*"><br><br>
-            
+        
             <button type="button" onclick="handleUpload()">Upload Image</button><br><br>
             <!-- Display uploaded image here -->
             <img id="uploadedImage" src="" alt="Uploaded Image">
             <button type="button" onclick="generatePDF()">Generate PDF</button>
         </form>
+        
 
         
     </div>
@@ -144,51 +164,59 @@
         }
 
         // Generate PDF
-        async function generatePDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+        // Generate PDF
+async function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-            // Fetching and formatting form values
-            const name = formatText(document.getElementById("name").value || "________________");
-            const parentName = formatText(document.getElementById("parentName").value || "________________");
-            const village = formatText(document.getElementById("village").value || "________________");
-            const postOffice = formatText(document.getElementById("postOffice").value || "________________");
-            const policeStation = formatText(document.getElementById("policeStation").value || "________________");
-            const district = formatText(document.getElementById("district").value || "________________");
-            const pincode = document.getElementById("pincode").value || "________________";
-            const income = document.getElementById("income").value || "________________";
-            const earningMembers = formatText(document.getElementById("earningMembers").value || "________________");
+    // Fetching the current date
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getDate().toString().padStart(2, '0')}-${(currentDate.getMonth() + 1)
+        .toString()
+        .padStart(2, '0')}-${currentDate.getFullYear()}`;
 
-            const incomeInWords = income !== "________________" ? `(${convertNumberToWords(income)} only)` : "";
+    // Fetching and formatting form values
+    const name = formatText(document.getElementById("name").value || "________________");
+    const parentName = formatText(document.getElementById("parentName").value || "________________");
+    const village = formatText(document.getElementById("village").value || "________________");
+    const postOffice = formatText(document.getElementById("postOffice").value || "________________");
+    const policeStation = formatText(document.getElementById("policeStation").value || "________________");
+    const district = formatText(document.getElementById("district").value || "________________");
+    const pincode = document.getElementById("pincode").value || "________________";
+    const income = document.getElementById("income").value || "________________";
+    const earningMembers = formatText(document.getElementById("earningMembers").value || "________________");
 
-            doc.setFont("arial", "normal");
-            doc.setFontSize(14);
-            doc.text("SELF-DECLARATION OF FAMILY INCOME", 70, 20);
+    const incomeInWords = income !== "________________" ? `(${convertNumberToWords(income)} only)` : "";
 
-            doc.setFont("times", "normal");
-            doc.setFontSize(12);
-            doc.text(`Date: __________________`, 10, 30);
-            doc.text(`I, ${name}, Son/Daughter of ${parentName},`, 10, 50);
-            doc.text(`Resident of ${village}, P.O- ${postOffice}, P.S- ${policeStation}, ${district}-${pincode}`, 10, 65);
-            doc.text(`do hereby solemnly affirm and declare as under:`, 10, 70);
-            doc.text(`The annual income of my family from all sources is Rs ${income}/- ${incomeInWords}.`, 10, 85);
-            doc.text(`My father is ${earningMembers} earning member(s) in my family.`, 10, 110);
-            doc.text(`I certify that the above information given by me is true and I am willing to provide any additional documents`, 10, 125);
-            doc.text(`that may be required to prove this cause.`, 10, 130);
-            doc.text(`In the case, the information furnished by me is found false, I will be liable for legal actions to be initiated`, 10, 145);
-            doc.text(`against me in accordance with law.`, 10, 150);
+    doc.setFont("arial", "normal");
+    doc.setFontSize(14);
+    doc.text("SELF-DECLARATION OF FAMILY INCOME", 70, 20);
 
-            doc.text(`Name of Candidate: ${name}`, 10, 170);
-            doc.text(`Signature of Candidate: `, 10, 190);
-            doc.text(`Name of Institution: EduBridge Learning Pvt. Ltd.`, 10, 200);
+    doc.setFont("times", "normal");
+    doc.setFontSize(12);
+    doc.text(`Date: ${formattedDate}`, 10, 30);
+    doc.text(`I, ${name}, Son/Daughter of ${parentName},`, 10, 50);
+    doc.text(`Resident of ${village}, P.O- ${postOffice}, P.S- ${policeStation}, ${district}-${pincode}`, 10, 65);
+    doc.text(`do hereby solemnly affirm and declare as under:`, 10, 70);
+    doc.text(`The annual income of my family from all sources is Rs ${income}/- ${incomeInWords}.`, 10, 85);
+    doc.text(`My father is ${earningMembers} earning member(s) in my family.`, 10, 110);
+    doc.text(`I certify that the above information given by me is true and I am willing to provide any additional documents`, 10, 125);
+    doc.text(`that may be required to prove this cause.`, 10, 130);
+    doc.text(`In the case, the information furnished by me is found false, I will be liable for legal actions to be initiated`, 10, 145);
+    doc.text(`against me in accordance with law.`, 10, 150);
 
-            // Insert the image into the PDF if background is removed
-            if (imageURL) {
-                doc.addImage(imageURL, "PNG", 55, 180, 35, 13);  // Adjust size as necessary
-            }
+    doc.text(`Name of Candidate: ${name}`, 10, 170);
+    doc.text(`Signature of Candidate: `, 10, 190);
+    doc.text(`Name of Institution: EduBridge Learning Pvt. Ltd.`, 10, 200);
 
-            doc.save("Family_Income_Declaration.pdf");
-        }
+    // Insert the image into the PDF if background is removed
+    if (imageURL) {
+        doc.addImage(imageURL, "PNG", 55, 180, 35, 13); // Adjust size as necessary
+    }
+
+    doc.save("Family_Income_Declaration.pdf");
+}
+
 
         // Function to convert the first letter to uppercase and remaining to lowercase
         function formatText(text) {
