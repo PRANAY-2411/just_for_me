@@ -150,58 +150,45 @@
             Income: <input type="number" id="income" placeholder="Enter income"><br><br>
             Earning Members: <input type="text" id="earningMembers" placeholder="Enter earning members"><br><br>
 
-             <!-- Corrected image links -->
-             <div class="image-container">
-                <img src="https://i.postimg.cc/9rSfKxXt/image1.jpg" alt="Image 1" height="auto" width="auto">
-                <img src="https://i.postimg.cc/tZMTbDtj/image2.jpg" alt="Image 2" height="auto" width="auto">
-            </div><br><br>
+   
 
             <!-- Signature Input -->
-            <label for="signatureInput">Upload Signature Image:</label>
+            <label for="signatureInput">Upload Transparent Signature:</label>
             <input type="file" id="signatureInput" accept="image/*"><br><br>
 
             <!-- Loader Animation -->
             <div id="loader" class="loader" style="display: none;"></div><br>
 
-            <button type="button" onclick="handleUpload()">Upload Image</button><br><br>
+            <button type="button" onclick="handleUpload()">Preview Image</button><br><br>
             <!-- Display uploaded image here -->
             <img id="uploadedImage" src="" alt="Uploaded Image">
             <button type="button" onclick="generatePDF()">Generate PDF</button>
         </form>
     </div>
-
-    <script>
+	
+	
+	
+	<script>
         let imageURL = "";
 
         function handleUpload() {
-            const loader = document.getElementById('loader');
-            loader.style.display = 'flex'; // Show loader
             const fileInput = document.getElementById('signatureInput');
             const image = fileInput.files[0];
-            const formData = new FormData();
-            formData.append("image_file", image);
-            formData.append('size', 'auto');
 
-            const apikey = "rd25D1ixBZQSsBZWZxuAbG7B";
-            fetch('https://api.remove.bg/v1.0/removebg', {
-                method: 'POST',
-                headers: { 'X-Api-Key': apikey },
-                body: formData
-            })
-                .then(response => response.blob())
-                .then(blob => {
-                    const url = URL.createObjectURL(blob);
-                    imageURL = url;
-
+            if (image) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    imageURL = reader.result;
                     const uploadedImage = document.getElementById('uploadedImage');
-                    uploadedImage.src = url;
-                    uploadedImage.style.display = 'block'; // Show uploaded image
-                })
-                .catch(err => console.error(err))
-                .finally(() => {
-                    loader.style.display = 'none'; // Hide loader
-                });
+                    uploadedImage.src = imageURL;
+                    uploadedImage.style.display = 'block';
+					uploadedImage.style.width = '140px'; // Set the width to 35px
+					uploadedImage.style.height = '52px'; // Set the height to 13px
+                };
+                reader.readAsDataURL(image);
+            }
         }
+
 
         async function generatePDF() {
             const { jsPDF } = window.jspdf;
